@@ -65,7 +65,7 @@ from ShrutiMusic import app
 
 from config import styled_button
 
-REPO_VIDEO = "https://files.catbox.moe/aoafwn.mp4"
+REPO_VIDEO = "https://files.catbox.moe/x4x2e8.mp4"
 
 @app.on_message(filters.command(["repo", "source"]))
 async def send_repo(_, message: Message):
