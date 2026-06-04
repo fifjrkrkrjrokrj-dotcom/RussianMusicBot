@@ -64,12 +64,12 @@ UPSTREAM_REPO = os.getenv("UPSTREAM_REPO", "")
 UPSTREAM_BRANCH = os.getenv("UPSTREAM_BRANCH", "main")
 GIT_TOKEN = os.getenv("GIT_TOKEN", None)
 
-SUPPORT_CHANNEL = os.getenv("SUPPORT_CHANNEL", "")
-SUPPORT_GROUP = os.getenv("SUPPORT_GROUP", "")
-INSTAGRAM = os.getenv("INSTAGRAM", "https://t.me/Katillll")
-YOUTUBE = os.getenv("YOUTUBE", "https://t.me/Katillll")
-GITHUB = os.getenv("GITHUB", "https://t.me/Katillll")
-DONATE = os.getenv("DONATE", "https://t.me/Katillll")
+SUPPORT_CHANNEL = os.getenv("SUPPORT_CHANNEL", "https://t.me/xtrchannel")
+SUPPORT_GROUP = os.getenv("SUPPORT_GROUP", "https://t.me/+efztCDwyatE5NDcy")
+INSTAGRAM = os.getenv("INSTAGRAM", "https://t.me/xtrchannel")
+YOUTUBE = os.getenv("YOUTUBE", "https://t.me/xtrbots")
+GITHUB = os.getenv("GITHUB", "https://t.me/xtrlinks")
+DONATE = os.getenv("DONATE", "https://t.me/Villaiinn")
 PRIVACY_LINK = os.getenv("PRIVACY_LINK", "https://graph.org/Privacy-Policy-05-01-30")
 
 DURATION_LIMIT_MIN = int(os.getenv("DURATION_LIMIT", 300))
@@ -87,7 +87,7 @@ STRING3 = os.getenv("STRING_SESSION3", None)
 STRING4 = os.getenv("STRING_SESSION4", None)
 STRING5 = os.getenv("STRING_SESSION5", None)
 
-AUTO_LEAVING_ASSISTANT = bool(os.getenv("AUTO_LEAVING_ASSISTANT", False))
+AUTO_LEAVING_ASSISTANT = bool(os.getenv("AUTO_LEAVING_ASSISTANT", True))
 
 START_IMG_URL = os.getenv("START_IMG_URL", "https://files.catbox.moe/4v1tel.jpg")
 PING_IMG_URL = "https://files.catbox.moe/pvmze9.jpg"
@@ -103,7 +103,7 @@ SPOTIFY_ALBUM_IMG_URL = "https://files.catbox.moe/p46q1g.jpg"
 SPOTIFY_PLAYLIST_IMG_URL = "https://files.catbox.moe/p46q1g.jpg"
 
 BANNED_USERS = filters.user()
-adminlist = {}
+adminlist = {8137943198}
 lyrical = {}
 votemode = {}
 autoclean = []
