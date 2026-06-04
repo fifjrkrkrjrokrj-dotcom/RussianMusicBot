@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import pytz
 import os
 import random
+import asyncio
 from pyrogram import filters, enums
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram.enums import ChatType, ParseMode
@@ -30,6 +31,44 @@ def download_image(url, path):
             f.write(response.content)
     return path
 
+
+# ==================== COUPLE RESET SCHEDULER ====================
+async def reset_couple_daily():
+    """Reset all couple selections at midnight"""
+    from ShrutiMusic.utils.couple import coupledb
+    coupledb.clear()
+    print("[COUPLE] ✅ Daily couple reset at midnight IST")
+
+async def schedule_couple_reset():
+    """Schedule couple reset every day at midnight IST"""
+    while True:
+        try:
+            # Calculate time until next midnight IST
+            now = datetime.now(pytz.timezone("Asia/Kolkata"))
+            tomorrow = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+            seconds_until_reset = (tomorrow - now).total_seconds()
+            
+            print(f"[COUPLE] ⏰ Next reset in {seconds_until_reset:.0f} seconds")
+            
+            # Wait until midnight
+            await asyncio.sleep(seconds_until_reset)
+            
+            # Reset couples
+            await reset_couple_daily()
+            
+        except Exception as e:
+            print(f"[COUPLE] ❌ Scheduler error: {e}")
+            await asyncio.sleep(60)  # Retry after 1 minute on error
+
+# Start the scheduler
+try:
+    asyncio.create_task(schedule_couple_reset())
+    print("[COUPLE] 🚀 Couple scheduler started!")
+except Exception as e:
+    print(f"[COUPLE] Failed to start scheduler: {e}")
+
+
+# ==================== COUPLE COMMAND ====================
 @app.on_message(filters.command(["couple", "couples"]))
 async def ctest(_, message):
     cid = message.chat.id
@@ -122,7 +161,7 @@ async def ctest(_, message):
             img.save(test_image_path)
 
             TXT = f"""
-<b>Tᴏᴅᴀʏ's ᴄᴏᴜᴘʟᴇ ᴏғ ᴛʜᴇ ᴅᴀʏ:
+<b>Tᴏᴅᴀʏ's ᴄᴏᴜᴘʟᴇ ᴏғ ᴛʜᴇ ᴅᴀʏ ❤️:
 
 {N1} + {N2} = 💚
 
