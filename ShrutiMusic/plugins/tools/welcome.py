@@ -1,5 +1,4 @@
 import os
-import asyncio
 from unidecode import unidecode
 from PIL import ImageDraw, Image, ImageFont, ImageChops
 from pyrogram import enums, filters
@@ -8,13 +7,15 @@ from logging import getLogger
 from ShrutiMusic import LOGGER
 from ShrutiMusic.misc import SUDOERS
 from ShrutiMusic import app
-from ShrutiMusic.utils.database import welcomedb
 from config import styled_button
 
 LOGGER = getLogger(__name__)
 
 # Create downloads folder if missing
 os.makedirs("downloads", exist_ok=True)
+
+# In-memory welcome settings (to avoid MongoDB SECONDARY errors)
+welcome_settings = {}
 
 class temp:
     ME = None
@@ -60,22 +61,6 @@ def welcomepic(pic, user, chat, uid, uname):
         LOGGER.error(f"Error creating welcome pic: {e}")
         return None
 
-async def safe_db_operation(operation, *args, **kwargs):
-    """Retry database operation with exponential backoff"""
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            return await operation(*args, **kwargs)
-        except Exception as e:
-            if "SECONDARY" in str(e):
-                if attempt < max_retries - 1:
-                    wait_time = 2 ** attempt
-                    LOGGER.warning(f"DB SECONDARY error, retrying in {wait_time}s...")
-                    await asyncio.sleep(wait_time)
-                    continue
-            LOGGER.error(f"DB operation failed: {e}")
-            return None
-
 @app.on_message(filters.command("welcome") & ~filters.private)
 async def auto_state(_, message):
     usage = "<b>❖ ᴜsᴀɢᴇ ➥</b> /welcome [on|off]"
@@ -90,82 +75,68 @@ async def auto_state(_, message):
         return await message.reply_text("❌ Error occurred", parse_mode=enums.ParseMode.HTML)
 
     if user.status in (enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER):
-        try:
-            A = await safe_db_operation(welcomedb.find_one, {"chat_id": chat_id})
-            state = message.text.split(None, 1)[1].strip().lower()
+        state = message.text.split(None, 1)[1].strip().lower()
 
-            if state == "on":
-                if A and not A.get("disabled", False):
-                    return await message.reply_text("✦ Special Welcome Already Enabled", parse_mode=enums.ParseMode.HTML)
-                await safe_db_operation(
-                    welcomedb.update_one,
-                    {"chat_id": chat_id},
-                    {"$set": {"disabled": False}},
-                    upsert=True
-                )
-                await message.reply_text(f"✦ Enabled Special Welcome in {message.chat.title}", parse_mode=enums.ParseMode.HTML)
+        if state == "on":
+            # Check if already enabled
+            if welcome_settings.get(chat_id, False):
+                return await message.reply_text("✦ Special Welcome Already Enabled", parse_mode=enums.ParseMode.HTML)
+            welcome_settings[chat_id] = True
+            await message.reply_text(f"✦ Enabled Special Welcome in {message.chat.title}", parse_mode=enums.ParseMode.HTML)
 
-            elif state == "off":
-                if A and A.get("disabled", False):
-                    return await message.reply_text("✦ Special Welcome Already Disabled", parse_mode=enums.ParseMode.HTML)
-                await safe_db_operation(
-                    welcomedb.update_one,
-                    {"chat_id": chat_id},
-                    {"$set": {"disabled": True}},
-                    upsert=True
-                )
-                await message.reply_text(f"✦ Disabled Special Welcome in {message.chat.title}", parse_mode=enums.ParseMode.HTML)
+        elif state == "off":
+            # Check if already disabled
+            if not welcome_settings.get(chat_id, False):
+                return await message.reply_text("✦ Special Welcome Already Disabled", parse_mode=enums.ParseMode.HTML)
+            welcome_settings[chat_id] = False
+            await message.reply_text(f"✦ Disabled Special Welcome in {message.chat.title}", parse_mode=enums.ParseMode.HTML)
 
-            else:
-                await message.reply_text(usage, parse_mode=enums.ParseMode.HTML)
-        except Exception as e:
-            LOGGER.error(f"Error in welcome command: {e}")
-            await message.reply_text("❌ Database error, please try again", parse_mode=enums.ParseMode.HTML)
+        else:
+            await message.reply_text(usage, parse_mode=enums.ParseMode.HTML)
     else:
         await message.reply_text("✦ Only Admins Can Use This Command", parse_mode=enums.ParseMode.HTML)
 
 @app.on_chat_member_updated(filters.group, group=-3)
 async def greet_group(_, member: ChatMemberUpdated):
     chat_id = member.chat.id
+    
+    # Check if welcome is disabled (default is enabled)
+    if not welcome_settings.get(chat_id, True):
+        return
+
+    if (
+        not member.new_chat_member
+        or member.new_chat_member.status in {"banned", "left", "restricted"}
+        or member.old_chat_member
+    ):
+        return
+
+    user = member.new_chat_member.user if member.new_chat_member else member.from_user
     try:
-        A = await safe_db_operation(welcomedb.find_one, {"chat_id": chat_id})
+        pic = await app.download_media(
+            user.photo.big_file_id, file_name=f"pp{user.id}.png"
+        )
+    except Exception:
+        pic = "ShrutiMusic/assets/upic.png"
 
-        if A and A.get("disabled", False):
+    # Delete previous welcome message for this chat
+    old_msg_key = f"welcome-{member.chat.id}"
+    if temp.MELCOW.get(old_msg_key) is not None:
+        try:
+            await temp.MELCOW[old_msg_key].delete()
+        except Exception as e:
+            LOGGER.error(f"Error deleting old welcome: {e}")
+
+    try:
+        username_display = user.username if user.username else "ɴᴏᴛ sᴇᴛ"
+        welcomeimg = welcomepic(
+            pic, user.first_name, member.chat.title, user.id, username_display
+        )
+
+        if not welcomeimg:
             return
 
-        if (
-            not member.new_chat_member
-            or member.new_chat_member.status in {"banned", "left", "restricted"}
-            or member.old_chat_member
-        ):
-            return
-
-        user = member.new_chat_member.user if member.new_chat_member else member.from_user
-        try:
-            pic = await app.download_media(
-                user.photo.big_file_id, file_name=f"pp{user.id}.png"
-            )
-        except Exception:
-            pic = "ShrutiMusic/assets/upic.png"
-
-        # Delete previous welcome message for this chat
-        old_msg_key = f"welcome-{member.chat.id}"
-        if temp.MELCOW.get(old_msg_key) is not None:
-            try:
-                await temp.MELCOW[old_msg_key].delete()
-            except Exception as e:
-                LOGGER.error(f"Error deleting old welcome: {e}")
-
-        try:
-            username_display = user.username if user.username else "ɴᴏᴛ sᴇᴛ"
-            welcomeimg = welcomepic(
-                pic, user.first_name, member.chat.title, user.id, username_display
-            )
-
-            if not welcomeimg:
-                return
-
-            caption = f"""
+        caption = f"""
 <blockquote>🌟 <b>ᴡᴇʟᴄᴏᴍᴇ {user.mention}!</b></blockquote>
 
 <blockquote>
@@ -186,32 +157,29 @@ async def greet_group(_, member: ChatMemberUpdated):
 </blockquote>
 """
 
-            reply_markup = InlineKeyboardMarkup([
-                [styled_button("🎵 ᴀᴅᴅ ᴍᴇ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ 🎵", url=f"https://t.me/{app.username}?startgroup=True", style=enums.ButtonStyle.PRIMARY)],
-                [styled_button("⟪ #𝗫𝗧𝗥 ⟫ 𝗡𝗘𝗧", url="https://t.me/xtrchannel", style=enums.ButtonStyle.SECONDARY),
-                 styled_button("⟪#𝗫𝗧𝗥⟫ 𝗕𝗢𝗧𝗦", url="https://t.me/XTRBots", style=enums.ButtonStyle.SECONDARY)]
-            ])
+        reply_markup = InlineKeyboardMarkup([
+            [styled_button("🎵 ᴀᴅᴅ ᴍᴇ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ 🎵", url=f"https://t.me/{app.username}?startgroup=True", style=enums.ButtonStyle.PRIMARY)],
+            [styled_button("⟪ #𝗫𝗧𝗥 ⟫ 𝗡𝗘𝗧", url="https://t.me/xtrchannel", style=enums.ButtonStyle.SECONDARY),
+             styled_button("⟪#𝗫𝗧𝗥⟫ 𝗕𝗢𝗧𝗦", url="https://t.me/XTRBots", style=enums.ButtonStyle.SECONDARY)]
+        ])
 
-            sent_msg = await app.send_photo(
-                member.chat.id,
-                photo=welcomeimg,
-                caption=caption,
-                reply_markup=reply_markup,
-                parse_mode=enums.ParseMode.HTML
-            )
-            temp.MELCOW[old_msg_key] = sent_msg
-
-        except Exception as e:
-            LOGGER.error(f"Failed to send welcome: {e}")
-
-        # Cleanup files
-        try:
-            if os.path.exists(f"downloads/welcome#{user.id}.png"):
-                os.remove(f"downloads/welcome#{user.id}.png")
-            if os.path.exists(f"downloads/pp{user.id}.png"):
-                os.remove(f"downloads/pp{user.id}.png")
-        except Exception:
-            pass
+        sent_msg = await app.send_photo(
+            member.chat.id,
+            photo=welcomeimg,
+            caption=caption,
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
+        temp.MELCOW[old_msg_key] = sent_msg
 
     except Exception as e:
-        LOGGER.error(f"Error in greet_group: {e}")
+        LOGGER.error(f"Failed to send welcome: {e}")
+
+    # Cleanup files
+    try:
+        if os.path.exists(f"downloads/welcome#{user.id}.png"):
+            os.remove(f"downloads/welcome#{user.id}.png")
+        if os.path.exists(f"downloads/pp{user.id}.png"):
+            os.remove(f"downloads/pp{user.id}.png")
+    except Exception:
+        pass
