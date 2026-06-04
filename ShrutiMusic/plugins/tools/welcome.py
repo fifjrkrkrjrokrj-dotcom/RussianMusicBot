@@ -112,32 +112,25 @@ async def greet_group(_, member: ChatMemberUpdated):
             pic, user.first_name, member.chat.title, user.id, username_display
         )
         
+        # ✅ Fixed caption: removed unsupported <blockquote> tags
         caption = f"""
-<blockquote>🌟 <b>ᴡᴇʟᴄᴏᴍᴇ {user.mention}!</b></blockquote>
+🌟 <b>ᴡᴇʟᴄᴏᴍᴇ {user.mention}!</b>
 
-<blockquote>
 📋 <b>ɢʀᴏᴜᴘ:</b> {member.chat.title}
 🆔 <b>ʏᴏᴜʀ ɪᴅ:</b> <code>{user.id}</code>
 👤 <b>ᴜsᴇʀɴᴀᴍᴇ:</b> @{username_display}
-</blockquote>
 
-<blockquote>
 ✨ ᴛʜᴀɴᴋ ʏᴏᴜ ғᴏʀ ᴊᴏɪɴɪɴɢ <b>{member.chat.title}</b>!
 🤝 ᴍᴀᴋᴇ ɴᴇᴡ ғʀɪᴇɴᴅs, ᴄʜᴀᴛ ᴡɪᴛʜ ᴏᴛʜᴇʀs, ᴀɴᴅ ᴇɴᴊᴏʏ ᴛʜᴇ ᴄᴏᴍᴍᴜɴɪᴛʏ.
-</blockquote>
 
-<blockquote>
 📢 <b>ᴅᴏɴ'ᴛ ғᴏʀɢᴇᴛ ᴛᴏ ᴊᴏɪɴ @XTR_Net</b>
 
-<blockquote>
 💎 ʀᴇsᴘᴇᴄᴛ ᴛʜᴇ ʀᴜʟᴇs • sᴛᴀʏ ᴀᴄᴛɪᴠᴇ • ʜᴀᴠᴇ ғᴜɴ ❤️
-</blockquote>
-</blockquote>
 """
 
-        # Sabhi buttons PRIMARY style mein (styled_button se)
+        # All three buttons in PRIMARY style
         reply_markup = InlineKeyboardMarkup([
-            [styled_button("🎵 𝗔𝗗𝗗 𝗠𝗘 𝗜𝗡 𝗬𝗢𝗨𝗥 𝗚𝗥𝗢𝗨𝗣 🎵", url=f"https://t.me/{app.username}?startgroup=True", style=enums.ButtonStyle.PRIMARY)],
+            [styled_button("🎵 ᴀᴅᴅ ᴍᴇ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ 🎵", url=f"https://t.me/{app.username}?startgroup=True", style=enums.ButtonStyle.PRIMARY)],
             [styled_button("⟪ #𝗫𝗧𝗥 ⟫ 𝗡𝗘𝗧", url="https://t.me/xtrchannel", style=enums.ButtonStyle.PRIMARY),
              styled_button("⟪#𝗫𝗧𝗥⟫ 𝗕𝗢𝗧𝗦", url="https://t.me/XTRBots", style=enums.ButtonStyle.PRIMARY)]
         ])
