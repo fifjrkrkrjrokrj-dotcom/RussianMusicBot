@@ -87,7 +87,7 @@ STRING3 = os.getenv("STRING_SESSION3", None)
 STRING4 = os.getenv("STRING_SESSION4", None)
 STRING5 = os.getenv("STRING_SESSION5", None)
 
-AUTO_LEAVING_ASSISTANT = bool(os.getenv("AUTO_LEAVING_ASSISTANT", True))
+AUTO_LEAVING_ASSISTANT = bool(os.getenv("AUTO_LEAVING_ASSISTANT", False))
 
 START_IMG_URL = os.getenv("START_IMG_URL", "https://files.catbox.moe/4v1tel.jpg")
 PING_IMG_URL = "https://files.catbox.moe/pvmze9.jpg"
