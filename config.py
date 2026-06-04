@@ -6,7 +6,7 @@ from pyrogram import filters, enums
 from pyrogram.types import InlineKeyboardButton
 import builtins
 
-# Ensure ButtonStyle exists in pyrogram.enums (fallback for older Kurigram/Pyrogram builds)
+# Ensure ButtonStyle exists in pyrogram.enums (fallback for older Kurigram/Pyrogram builds) Idea by @Villaiinn (Meet me in telegram) 
 try:
     _ = enums.ButtonStyle.PRIMARY
 except AttributeError:
@@ -52,8 +52,8 @@ API_ID = int(os.getenv("API_ID"))
 API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 OWNER_ID = int(os.getenv("OWNER_ID", None))
-OWNER_USERNAME = os.getenv("OWNER_USERNAME", "WTF_WhyMeeh")
-BOT_USERNAME = os.getenv("BOT_USERNAME", "ShrutixMusicBot")
+OWNER_USERNAME = os.getenv("OWNER_USERNAME", "Villaiinn")
+BOT_USERNAME = os.getenv("BOT_USERNAME", "XTRMusicBot")
 
 MONGO_DB_URI = os.getenv("MONGO_DB_URI", None)
 LOG_GROUP_ID = int(os.getenv("LOG_GROUP_ID", None))
@@ -66,9 +66,9 @@ GIT_TOKEN = os.getenv("GIT_TOKEN", None)
 
 SUPPORT_CHANNEL = os.getenv("SUPPORT_CHANNEL", "https://t.me/xtrchannel")
 SUPPORT_GROUP = os.getenv("SUPPORT_GROUP", "https://t.me/+efztCDwyatE5NDcy")
-INSTAGRAM = os.getenv("INSTAGRAM", "https://t.me/xtrchannel")
-YOUTUBE = os.getenv("YOUTUBE", "https://t.me/xtrbots")
-GITHUB = os.getenv("GITHUB", "https://t.me/xtrlinks")
+INSTAGRAM = os.getenv("INSTAGRAM", "https://t.me/XTRGiveaways")
+YOUTUBE = os.getenv("YOUTUBE", "https://t.me/XTRBots")
+GITHUB = os.getenv("GITHUB", "https://t.me/XTR_Net")
 DONATE = os.getenv("DONATE", "https://t.me/Villaiinn")
 PRIVACY_LINK = os.getenv("PRIVACY_LINK", "https://graph.org/Privacy-Policy-05-01-30")
 
