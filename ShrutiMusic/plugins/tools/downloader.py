@@ -72,21 +72,21 @@ async def send_repo(_, message: Message):
     await message.reply_video(
         video=REPO_VIDEO,
         caption=(
-            "<b>✨ ʜᴇʏ ᴅᴇᴀʀ, ʜᴇʀᴇ ɪꜱ ᴛʜᴇ ᴏꜰꜰɪᴄɪᴀʟ ʀᴇᴘᴏꜱɪᴛᴏʀʏ ᴏꜰ ᴛʜɪꜱ ʙᴏᴛ ✨</b>\n\n"
-            "🔗 ᴅᴏɴ'ᴛ ꜰᴏʀɢᴇᴛ ᴛᴏ ɢɪᴠᴇ ᴀ ꜱᴛᴀʀ 🌟 ᴀɴᴅ ꜰᴏʟʟᴏᴡ!\n\n"
-            "🧡 ᴄʀᴇᴅɪᴛꜱ : <a href='https://t.me/Katillll'>@Katillll</a>"
+           "<b>✨ ʜᴇʏ ᴅᴇᴀʀ, ᴛʜᴇ ʀᴇᴘᴏꜱɪᴛᴏʀʏ ᴏꜰ ᴛʜɪꜱ ʙᴏᴛ ɪꜱ ᴘʀɪᴠᴀᴛᴇ ✨</b>\n\n"
+           "🛒 ᴛᴏ ᴘᴜʀᴄʜᴀꜱᴇ ᴛʜᴇ ʟᴀᴛᴇꜱᴛ ᴠᴇʀꜱɪᴏɴ, ᴘʟᴇᴀꜱᴇ ᴄᴏɴᴛᴀᴄᴛ ᴛʜᴇ ᴅᴇᴠᴇʟᴏᴘᴇʀ!\n\n"
+           "🧡 ᴄᴏɴᴛᴀᴄᴛ : <a href='https://t.me/Villaiinn'>@Villaiinn</a>"
         ),
         reply_markup=InlineKeyboardMarkup(
             [
                 [
                     styled_button(
                         "👑 Owner",
-                        url="https://t.me/Katillll",
+                        url="https://t.me/Villaiinn",
                         style=enums.ButtonStyle.PRIMARY,
                     ),
                     styled_button(
                         "💸 Buy Now",
-                        url="https://t.me/Katillll",
+                        url="https://t.me/Villaiinn",
                         style=enums.ButtonStyle.DANGER,
                     )
                 ]
