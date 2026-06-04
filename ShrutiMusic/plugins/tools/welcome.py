@@ -2,7 +2,7 @@ import os
 from unidecode import unidecode
 from PIL import ImageDraw, Image, ImageFont, ImageChops
 from pyrogram import enums, filters
-from pyrogram.types import ChatMemberUpdated, InlineKeyboardMarkup, Message
+from pyrogram.types import ChatMemberUpdated, InlineKeyboardMarkup, InlineKeyboardButton, Message
 from logging import getLogger
 from ShrutiMusic import LOGGER
 from ShrutiMusic.misc import SUDOERS
@@ -110,7 +110,6 @@ async def greet_group(_, member: ChatMemberUpdated):
         welcomeimg = welcomepic(
             pic, user.first_name, member.chat.title, user.id, user.username
         )
-        # Caption same as working code (no blockquotes)
         caption = f"""🌟 <b>ᴡᴇʟᴄᴏᴍᴇ {user.mention}!</b>
 
 📋 <b>ɢʀᴏᴜᴘ:</b> {member.chat.title}
@@ -119,11 +118,12 @@ async def greet_group(_, member: ChatMemberUpdated):
 
 <b><u>ʜᴏᴘᴇ ʏᴏᴜ ғɪɴᴅ ɢᴏᴏᴅ ᴠɪʙᴇs, ɴᴇᴡ ғʀɪᴇɴᴅs, ᴀɴᴅ ʟᴏᴛs ᴏғ ғᴜɴ ʜᴇʀᴇ!</u> 🌟</b>"""
 
-        # Updated buttons with two extra buttons
+        # Use styled_button only for the first button (it works)
+        # For extra buttons, use normal InlineKeyboardButton to avoid SECONDARY error
         reply_markup = InlineKeyboardMarkup([
             [styled_button("🎵 ᴀᴅᴅ ᴍᴇ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ 🎵", url=f"https://t.me/{app.username}?startgroup=True", style=enums.ButtonStyle.PRIMARY)],
-            [styled_button("⟪ #𝗫𝗧𝗥 ⟫ 𝗡𝗘𝗧", url="https://t.me/xtrchannel", style=enums.ButtonStyle.SECONDARY),
-             styled_button("⟪#𝗫𝗧𝗥⟫ 𝗕𝗢𝗧𝗦", url="https://t.me/XTRBots", style=enums.ButtonStyle.SECONDARY)]
+            [InlineKeyboardButton("⟪ #𝗫𝗧𝗥 ⟫ 𝗡𝗘𝗧", url="https://t.me/xtrchannel"),
+             InlineKeyboardButton("⟪#𝗫𝗧𝗥⟫ 𝗕𝗢𝗧𝗦", url="https://t.me/XTRBots")]
         ])
 
         temp.MELCOW[f"welcome-{member.chat.id}"] = await app.send_photo(
