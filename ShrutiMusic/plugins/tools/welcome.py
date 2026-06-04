@@ -2,7 +2,7 @@ import os
 from unidecode import unidecode
 from PIL import ImageDraw, Image, ImageFont, ImageChops
 from pyrogram import enums, filters
-from pyrogram.types import ChatMemberUpdated, InlineKeyboardMarkup, InlineKeyboardButton, Message
+from pyrogram.types import ChatMemberUpdated, InlineKeyboardMarkup, Message
 from logging import getLogger
 from ShrutiMusic import LOGGER
 from ShrutiMusic.misc import SUDOERS
@@ -107,23 +107,39 @@ async def greet_group(_, member: ChatMemberUpdated):
             LOGGER.error(e)
 
     try:
+        username_display = user.username if user.username else "ɴᴏᴛ sᴇᴛ"
         welcomeimg = welcomepic(
-            pic, user.first_name, member.chat.title, user.id, user.username
+            pic, user.first_name, member.chat.title, user.id, username_display
         )
-        caption = f"""🌟 <b>ᴡᴇʟᴄᴏᴍᴇ {user.mention}!</b>
+        
+        caption = f"""
+<blockquote>🌟 <b>ᴡᴇʟᴄᴏᴍᴇ {user.mention}!</b></blockquote>
 
+<blockquote>
 📋 <b>ɢʀᴏᴜᴘ:</b> {member.chat.title}
 🆔 <b>ʏᴏᴜʀ ɪᴅ:</b> <code>{user.id}</code>
-👤 <b>ᴜsᴇʀɴᴀᴍᴇ:</b> @{user.username if user.username else "ɴᴏᴛ sᴇᴛ"}
+👤 <b>ᴜsᴇʀɴᴀᴍᴇ:</b> @{username_display}
+</blockquote>
 
-<b><u>ʜᴏᴘᴇ ʏᴏᴜ ғɪɴᴅ ɢᴏᴏᴅ ᴠɪʙᴇs, ɴᴇᴡ ғʀɪᴇɴᴅs, ᴀɴᴅ ʟᴏᴛs ᴏғ ғᴜɴ ʜᴇʀᴇ!</u> 🌟</b>"""
+<blockquote>
+✨ ᴛʜᴀɴᴋ ʏᴏᴜ ғᴏʀ ᴊᴏɪɴɪɴɢ <b>{member.chat.title}</b>!
+🤝 ᴍᴀᴋᴇ ɴᴇᴡ ғʀɪᴇɴᴅs, ᴄʜᴀᴛ ᴡɪᴛʜ ᴏᴛʜᴇʀs, ᴀɴᴅ ᴇɴᴊᴏʏ ᴛʜᴇ ᴄᴏᴍᴍᴜɴɪᴛʏ.
+</blockquote>
 
-        # Use styled_button only for the first button (it works)
-        # For extra buttons, use normal InlineKeyboardButton to avoid SECONDARY error
+<blockquote>
+📢 <b>ᴅᴏɴ'ᴛ ғᴏʀɢᴇᴛ ᴛᴏ ᴊᴏɪɴ @XTR_Net</b>
+
+<blockquote>
+💎 ʀᴇsᴘᴇᴄᴛ ᴛʜᴇ ʀᴜʟᴇs • sᴛᴀʏ ᴀᴄᴛɪᴠᴇ • ʜᴀᴠᴇ ғᴜɴ ❤️
+</blockquote>
+</blockquote>
+"""
+
+        # Sabhi buttons PRIMARY style mein (styled_button se)
         reply_markup = InlineKeyboardMarkup([
-            [styled_button("🎵 ᴀᴅᴅ ᴍᴇ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ 🎵", url=f"https://t.me/{app.username}?startgroup=True", style=enums.ButtonStyle.PRIMARY)],
-            [InlineKeyboardButton("⟪ #𝗫𝗧𝗥 ⟫ 𝗡𝗘𝗧", url="https://t.me/xtrchannel"),
-             InlineKeyboardButton("⟪#𝗫𝗧𝗥⟫ 𝗕𝗢𝗧𝗦", url="https://t.me/XTRBots")]
+            [styled_button("🎵 𝗔𝗗𝗗 𝗠𝗘 𝗜𝗡 𝗬𝗢𝗨𝗥 𝗚𝗥𝗢𝗨𝗣 🎵", url=f"https://t.me/{app.username}?startgroup=True", style=enums.ButtonStyle.PRIMARY)],
+            [styled_button("⟪ #𝗫𝗧𝗥 ⟫ 𝗡𝗘𝗧", url="https://t.me/xtrchannel", style=enums.ButtonStyle.PRIMARY),
+             styled_button("⟪#𝗫𝗧𝗥⟫ 𝗕𝗢𝗧𝗦", url="https://t.me/XTRBots", style=enums.ButtonStyle.PRIMARY)]
         ])
 
         temp.MELCOW[f"welcome-{member.chat.id}"] = await app.send_photo(
