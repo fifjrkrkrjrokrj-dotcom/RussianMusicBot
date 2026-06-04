@@ -7,15 +7,13 @@ from logging import getLogger
 from ShrutiMusic import LOGGER
 from ShrutiMusic.misc import SUDOERS
 from ShrutiMusic import app
+from ShrutiMusic.utils.database import welcomedb
 from config import styled_button
 
 LOGGER = getLogger(__name__)
 
 # Create downloads folder if missing
 os.makedirs("downloads", exist_ok=True)
-
-# In-memory welcome settings (to avoid MongoDB SECONDARY errors)
-welcome_settings = {}
 
 class temp:
     ME = None
@@ -26,7 +24,6 @@ class temp:
     B_NAME = None
 
 def circle(pfp, size=(450, 450)):
-    # Use compatible resampling filter
     try:
         resample = Image.Resampling.LANCZOS
     except AttributeError:
@@ -42,24 +39,20 @@ def circle(pfp, size=(450, 450)):
     return pfp
 
 def welcomepic(pic, user, chat, uid, uname):
-    try:
-        background = Image.open("ShrutiMusic/assets/welcome.png")
-        pfp = Image.open(pic).convert("RGBA")
-        pfp = circle(pfp)
-        pfp = pfp.resize((450, 450))
-        draw = ImageDraw.Draw(background)
-        font = ImageFont.truetype('ShrutiMusic/assets/font.ttf', size=45)
-        draw.text((65, 250), f'NAME : {unidecode(user)}', fill="white", font=font)
-        draw.text((65, 340), f'ID : {uid}', fill="white", font=font)
-        draw.text((65, 430), f"USERNAME : {uname if uname else 'Not set'}", fill="white", font=font)
-        pfp_position = (767, 133)
-        background.paste(pfp, pfp_position, pfp)
-        out_path = f"downloads/welcome#{uid}.png"
-        background.save(out_path)
-        return out_path
-    except Exception as e:
-        LOGGER.error(f"Error creating welcome pic: {e}")
-        return None
+    background = Image.open("ShrutiMusic/assets/welcome.png")
+    pfp = Image.open(pic).convert("RGBA")
+    pfp = circle(pfp)
+    pfp = pfp.resize((450, 450))
+    draw = ImageDraw.Draw(background)
+    font = ImageFont.truetype('ShrutiMusic/assets/font.ttf', size=45)
+    draw.text((65, 250), f'NAME : {unidecode(user)}', fill="white", font=font)
+    draw.text((65, 340), f'ID : {uid}', fill="white", font=font)
+    draw.text((65, 430), f"USERNAME : {uname if uname else 'Not set'}", fill="white", font=font)
+    pfp_position = (767, 133)
+    background.paste(pfp, pfp_position, pfp)
+    out_path = f"downloads/welcome#{uid}.png"
+    background.save(out_path)
+    return out_path
 
 @app.on_message(filters.command("welcome") & ~filters.private)
 async def auto_state(_, message):
@@ -68,40 +61,35 @@ async def auto_state(_, message):
         return await message.reply_text(usage, parse_mode=enums.ParseMode.HTML)
 
     chat_id = message.chat.id
-    try:
-        user = await app.get_chat_member(message.chat.id, message.from_user.id)
-    except Exception as e:
-        LOGGER.error(f"Error getting chat member: {e}")
-        return await message.reply_text("❌ Error occurred", parse_mode=enums.ParseMode.HTML)
+    user = await app.get_chat_member(message.chat.id, message.from_user.id)
 
     if user.status in (enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER):
+        A = await welcomedb.find_one({"chat_id": chat_id})
         state = message.text.split(None, 1)[1].strip().lower()
 
         if state == "on":
-            # Check if already enabled
-            if welcome_settings.get(chat_id, False):
+            if A and not A.get("disabled", False):
                 return await message.reply_text("✦ Special Welcome Already Enabled", parse_mode=enums.ParseMode.HTML)
-            welcome_settings[chat_id] = True
+            await welcomedb.update_one({"chat_id": chat_id}, {"$set": {"disabled": False}}, upsert=True)
             await message.reply_text(f"✦ Enabled Special Welcome in {message.chat.title}", parse_mode=enums.ParseMode.HTML)
 
         elif state == "off":
-            # Check if already disabled
-            if not welcome_settings.get(chat_id, False):
+            if A and A.get("disabled", False):
                 return await message.reply_text("✦ Special Welcome Already Disabled", parse_mode=enums.ParseMode.HTML)
-            welcome_settings[chat_id] = False
+            await welcomedb.update_one({"chat_id": chat_id}, {"$set": {"disabled": True}}, upsert=True)
             await message.reply_text(f"✦ Disabled Special Welcome in {message.chat.title}", parse_mode=enums.ParseMode.HTML)
 
         else:
             await message.reply_text(usage, parse_mode=enums.ParseMode.HTML)
     else:
-        await message.reply_text("✦ Only Admins Can Use This Command", parse_mode=enums.ParseMode.HTML)
+        await message.reply("✦ Only Admins Can Use This Command", parse_mode=enums.ParseMode.HTML)
 
 @app.on_chat_member_updated(filters.group, group=-3)
 async def greet_group(_, member: ChatMemberUpdated):
     chat_id = member.chat.id
-    
-    # Check if welcome is disabled (default is enabled)
-    if not welcome_settings.get(chat_id, True):
+    A = await welcomedb.find_one({"chat_id": chat_id})
+
+    if A and A.get("disabled", False):
         return
 
     if (
@@ -116,25 +104,21 @@ async def greet_group(_, member: ChatMemberUpdated):
         pic = await app.download_media(
             user.photo.big_file_id, file_name=f"pp{user.id}.png"
         )
-    except Exception:
+    except AttributeError:
         pic = "ShrutiMusic/assets/upic.png"
 
-    # Delete previous welcome message for this chat
     old_msg_key = f"welcome-{member.chat.id}"
     if temp.MELCOW.get(old_msg_key) is not None:
         try:
             await temp.MELCOW[old_msg_key].delete()
         except Exception as e:
-            LOGGER.error(f"Error deleting old welcome: {e}")
+            LOGGER.error(e)
 
     try:
         username_display = user.username if user.username else "ɴᴏᴛ sᴇᴛ"
         welcomeimg = welcomepic(
             pic, user.first_name, member.chat.title, user.id, username_display
         )
-
-        if not welcomeimg:
-            return
 
         caption = f"""
 <blockquote>🌟 <b>ᴡᴇʟᴄᴏᴍᴇ {user.mention}!</b></blockquote>
@@ -153,14 +137,17 @@ async def greet_group(_, member: ChatMemberUpdated):
 <blockquote>
 📢 <b>ᴅᴏɴ'ᴛ ғᴏʀɢᴇᴛ ᴛᴏ ᴊᴏɪɴ @XTR_Net</b>
 
+<blockquote>
 💎 ʀᴇsᴘᴇᴄᴛ ᴛʜᴇ ʀᴜʟᴇs • sᴛᴀʏ ᴀᴄᴛɪᴠᴇ • ʜᴀᴠᴇ ғᴜɴ ❤️
+</blockquote>
 </blockquote>
 """
 
+        # Buttons as requested (using string styles to avoid error)
         reply_markup = InlineKeyboardMarkup([
-            [styled_button("🎵 ᴀᴅᴅ ᴍᴇ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ 🎵", url=f"https://t.me/{app.username}?startgroup=True", style=enums.ButtonStyle.PRIMARY)],
-            [styled_button("⟪ #𝗫𝗧𝗥 ⟫ 𝗡𝗘𝗧", url="https://t.me/xtrchannel", style=enums.ButtonStyle.SECONDARY),
-             styled_button("⟪#𝗫𝗧𝗥⟫ 𝗕𝗢𝗧𝗦", url="https://t.me/XTRBots", style=enums.ButtonStyle.SECONDARY)]
+            [styled_button("🎵 𝗔𝗗𝗗 𝗠𝗘 𝗜𝗡 𝗬𝗢𝗨𝗥 𝗚𝗥𝗢𝗨𝗣 🎵", url=f"https://t.me/{app.username}?startgroup=True", style="PRIMARY")],
+            [styled_button("⟪ #𝗫𝗧𝗥 ⟫ 𝗡𝗘𝗧", url="https://t.me/xtrchannel", style="SECONDARY"),
+             styled_button("⟪#𝗫𝗧𝗥⟫ 𝗕𝗢𝗧𝗦", url="https://t.me/XTRBots", style="SECONDARY")]
         ])
 
         sent_msg = await app.send_photo(
@@ -175,11 +162,9 @@ async def greet_group(_, member: ChatMemberUpdated):
     except Exception as e:
         LOGGER.error(f"Failed to send welcome: {e}")
 
-    # Cleanup files
+    # Cleanup
     try:
-        if os.path.exists(f"downloads/welcome#{user.id}.png"):
-            os.remove(f"downloads/welcome#{user.id}.png")
-        if os.path.exists(f"downloads/pp{user.id}.png"):
-            os.remove(f"downloads/pp{user.id}.png")
+        os.remove(f"downloads/welcome#{user.id}.png")
+        os.remove(f"downloads/pp{user.id}.png")
     except Exception:
         pass
