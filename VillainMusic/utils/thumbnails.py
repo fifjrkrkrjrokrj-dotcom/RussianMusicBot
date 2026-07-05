@@ -37,7 +37,7 @@ CANVAS_H = 2160
 FONT_BOLD = "VillainMusic/assets/font3.ttf"
 FONT_REGULAR = "VillainMusic/assets/font2.ttf"
 
-BOT_NAME = "XTR MUSIC"
+BOT_NAME = "RussianMusic Bot"
 
 # =====================================
 # THUMB GENERATOR
