@@ -94,12 +94,12 @@ def about_panel(_):
 def owner_panel(_):
     buttons = [
         [
-            styled_button(text=_["S_H_1"], url=config.INSTAGRAM, style=enums.ButtonStyle.PRIMARY),
-            styled_button(text=_["S_H_2"], url=config.YOUTUBE, style=enums.ButtonStyle.PRIMARY),
+            styled_button(text=_["S_H_1"], url=config.BLAZE_GIVEAWAY, style=enums.ButtonStyle.PRIMARY),
+            styled_button(text=_["S_H_2"], url=config.SUPPORT_GROUP, style=enums.ButtonStyle.PRIMARY),
         ],
         [
-            styled_button(text=_["S_H_3"], url=config.GITHUB, style=enums.ButtonStyle.PRIMARY),
-            styled_button(text=_["S_H_4"], url=config.DONATE, style=enums.ButtonStyle.PRIMARY),
+            styled_button(text=_["S_H_3"], url=config.SUPPORT_CHANNEL, style=enums.ButtonStyle.PRIMARY),
+            styled_button(text=_["S_H_4"], url=f"https://t.me/{config.OWNER_USERNAME}" if config.OWNER_USERNAME else "https://t.me/saarux", style=enums.ButtonStyle.PRIMARY),
         ],
         [
             styled_button(text=_["BACK_BUTTON"], callback_data="settingsback_helper", style=enums.ButtonStyle.PRIMARY)
