@@ -60,9 +60,9 @@ for filename in os.listdir(r"./strings/langs/"):
 
 # ===========================================
 # ©️ 2025 Nand Yaduwanshi (aka @NoxxOP)
-# 🔗 GitHub : https://github.com/NoxxOP/ShrutiMusic
-# 📢 Telegram Channel : https://t.me/ShrutiBots
+# 🔗 GitHub : https://github.com/NoxxOP/VillainMusic
+# 📢 Telegram Channel : https://t.me/VillainBots
 # ===========================================
 
 
-# ❤️ Love From ShrutiBots 
+# ❤️ Love From VillainBots 

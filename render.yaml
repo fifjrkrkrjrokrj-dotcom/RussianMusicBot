@@ -1,13 +1,13 @@
 services:
   - type: web
-    name: shruti-music
+    name: villain-music
     env: python
     region: oregon
     plan: free
     buildCommand: |
       apt-get update && apt-get install -y ffmpeg
       pip install -r requirements.txt
-    startCommand: python3 -m ShrutiMusic
+    startCommand: python3 -m VillainMusic
     autoDeploy: true
 
     envVars:
@@ -26,9 +26,9 @@ services:
       OWNER_USERNAME:
         value: WTF_WhyMeeh
       BOT_USERNAME:
-        value: ShrutixMusicBot
+        value: VillainxMusicBot
       UPSTREAM_REPO:
-        value: https://github.com/NoxxOP/ShrutiMusic
+        value: https://github.com/NoxxOP/VillainMusic
       STRING_SESSION:
         sync: false
       GIT_TOKEN:
@@ -40,9 +40,11 @@ services:
       LOG_GROUP_ID:
         value: -1002321189618
       SUPPORT_GROUP:
-        value: https://t.me/ShrutiBotsupport
+        value: https://t.me/VillainBotsupport
       SUPPORT_CHANNEL:
-        value: https://t.me/ShrutiBots
+        value: https://t.me/VillainBots
+      GIVEAWAY_CHANNEL:
+        value: https://t.me/XTRGiveaways
       INSTAGRAM:
         value: https://instagram.com/yaduwanshi_nand
       YOUTUBE:
@@ -50,6 +52,6 @@ services:
       GITHUB:
         value: https://github.com/NoxxOP
       DONATE:
-        value: https://t.me/ShrutiBots/91
+        value: https://t.me/VillainBots/91
       START_IMG_URL:
         sync: false

@@ -1,12 +1,12 @@
 {
-  "name": "Shruti Music",
+  "name": "Villain Music",
   "description": "A Telegram Music Player Bot, written in Python with Pyrogram and Py-Tgcalls.",
   "logo": "https://files.catbox.moe/v7hio8.jpg",
   "keywords": [
     "python3",
     "telegram",
     "bot",
-    "ShrutiBots",
+    "VillainBots",
     "MusicBot",
     "telegram-bot",
     "pyrogram"
@@ -22,8 +22,8 @@
       "value": "599574f6aff0a09ebb76305b58e7e9c2",
       "required": true
     },
-    "SHRUTI_API_KEY": {
-      "description": "Get this value from Telegram bot username @ShrutiApiBot",
+    "VILLAIN_API_KEY": {
+      "description": "Get this value from Telegram bot username @VillainApiBot",
       "value": "",
       "required": true
     },
@@ -44,12 +44,12 @@
     },
     "BOT_USERNAME": {
       "description": "The username of your bot (without @)",
-      "value": "ShrutixMusicBot",
+      "value": "VillainxMusicBot",
       "required": true
     },
     "UPSTREAM_REPO": {
       "description": "URL of your GitHub repository",
-      "value": "https://github.com/NoxxOP/ShrutiMusic",
+      "value": "https://github.com/NoxxOP/VillainMusic",
       "required": false
     },
     "STRING_SESSION": {
@@ -79,12 +79,17 @@
     },
     "SUPPORT_GROUP": {
       "description": "Your support group link",
-      "value": "https://t.me/ShrutiSupportChat",
+      "value": "https://t.me/VillainSupportChat",
       "required": false
     },
     "SUPPORT_CHANNEL": {
       "description": "Your support channel link",
-      "value": "https://t.me/ShrutiBots",
+      "value": "https://t.me/VillainBots",
+      "required": false
+    },
+    "GIVEAWAY_CHANNEL": {
+      "description": "Your giveaway channel link",
+      "value": "https://t.me/XTRGiveaways",
       "required": false
     },
     "INSTAGRAM": {
@@ -109,7 +114,7 @@
     },
     "START_IMG_URL": {
       "description": "Image that appears with the /start command",
-      "value": "https://graph.org/file/e054e63251ef2dc5729dd-6f719a9ecc59862631.png",
+      "value": "https://files.catbox.moe/bdlybo.mp4",
       "required": false
     }
   },

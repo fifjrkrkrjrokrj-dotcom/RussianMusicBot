@@ -38,12 +38,7 @@ success_style = builtins.success_style = STYLE_SUCCESS
 danger_style = builtins.danger_style = STYLE_DANGER
 
 def styled_button(text, **kwargs):
-    style = kwargs.pop("style", None)
-    if style is not None:
-        if isinstance(style, str):
-            kwargs["style"] = _STYLE_MAP.get(style.lower(), enums.ButtonStyle.DEFAULT)
-        else:
-            kwargs["style"] = style
+    kwargs.pop("style", None)
     return InlineKeyboardButton(text=text, **kwargs)
 
 load_dotenv()
@@ -53,22 +48,24 @@ API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 OWNER_ID = int(os.getenv("OWNER_ID", None))
 OWNER_USERNAME = os.getenv("OWNER_USERNAME", "Villaiinn")
-BOT_USERNAME = os.getenv("BOT_USERNAME", "XTRMusicBot")
+BOT_USERNAME = os.getenv("BOT_USERNAME", "VillainMusicBot")
 
 MONGO_DB_URI = os.getenv("MONGO_DB_URI", None)
 LOG_GROUP_ID = int(os.getenv("LOG_GROUP_ID", None))
 HEROKU_APP_NAME = os.getenv("HEROKU_APP_NAME")
 HEROKU_API_KEY = os.getenv("HEROKU_API_KEY")
 
-UPSTREAM_REPO = os.getenv("UPSTREAM_REPO", "")
+UPSTREAM_REPO = os.getenv("UPSTREAM_REPO", "https://github.com/fifjrkrkrjrokrj-dotcom/XTRMUSIC")
 UPSTREAM_BRANCH = os.getenv("UPSTREAM_BRANCH", "main")
 GIT_TOKEN = os.getenv("GIT_TOKEN", None)
 
-SUPPORT_CHANNEL = os.getenv("SUPPORT_CHANNEL", "https://t.me/xtrchannel")
-SUPPORT_GROUP = os.getenv("SUPPORT_GROUP", "https://t.me/+efztCDwyatE5NDcy")
+SUPPORT_CHANNEL = os.getenv("SUPPORT_CHANNEL", "https://t.me/THExHAVELI")
+SUPPORT_GROUP = os.getenv("SUPPORT_GROUP", "https://t.me/Python_networks")
+GIVEAWAY_CHANNEL = os.getenv("GIVEAWAY_CHANNEL", "https://t.me/XTRGiveaways")
+BLAZE_GIVEAWAY = os.getenv("BLAZE_GIVEAWAY", "https://t.me/+zilRKCOEgkc5YTll")
 INSTAGRAM = os.getenv("INSTAGRAM", "https://t.me/XTRGiveaways")
-YOUTUBE = os.getenv("YOUTUBE", "https://t.me/XTRBots")
-GITHUB = os.getenv("GITHUB", "https://t.me/XTR_Net")
+YOUTUBE = os.getenv("YOUTUBE", "https://t.me/VillainBots")
+GITHUB = os.getenv("GITHUB", "https://t.me/Villain_Net")
 DONATE = os.getenv("DONATE", "https://t.me/Villaiinn")
 PRIVACY_LINK = os.getenv("PRIVACY_LINK", "https://graph.org/Privacy-Policy-05-01-30")
 
@@ -89,7 +86,7 @@ STRING5 = os.getenv("STRING_SESSION5", None)
 
 AUTO_LEAVING_ASSISTANT = bool(os.getenv("AUTO_LEAVING_ASSISTANT", False))
 
-START_IMG_URL = os.getenv("START_IMG_URL", "https://files.catbox.moe/4v1tel.jpg")
+START_IMG_URL = os.getenv("START_IMG_URL", "https://files.catbox.moe/bdlybo.mp4")
 PING_IMG_URL = "https://files.catbox.moe/pvmze9.jpg"
 PLAYLIST_IMG_URL = "https://files.catbox.moe/d87zj0.jpg"
 STATS_IMG_URL = "https://files.catbox.moe/i691sk.jpg"

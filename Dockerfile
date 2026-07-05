@@ -12,4 +12,4 @@ WORKDIR /app/
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-CMD ["python", "-m", "ShrutiMusic"]
+CMD ["python", "-m", "VillainMusic"]

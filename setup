@@ -59,7 +59,7 @@ install_packages() {
             pprint "✓ Done\n" "cgreen"
         else
             pprint "✗ Failed\n" "cred"
-            pprint "\n⚠ FFmpeg is required for ShrutiMusic. Please install it manually.\n" "cyellow"
+            pprint "\n⚠ FFmpeg is required for VillainMusic. Please install it manually.\n" "cyellow"
             exit 1
         fi
     else
@@ -157,7 +157,7 @@ main() {
     clear
     pprint "\n╔════════════════════════════════════╗\n" "cpurple"
     pprint "║                                    ║\n" "cpurple"
-    pprint "║     ShrutiMusic Setup Installer    ║\n" "cpurple"
+    pprint "║     VillainMusic Setup Installer    ║\n" "cpurple"
     pprint "║                                    ║\n" "cpurple"
     pprint "╚════════════════════════════════════╝\n\n" "cpurple"
     
