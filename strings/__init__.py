@@ -56,7 +56,7 @@ for filename in os.listdir(r"./strings/langs/"):
         exit()
 
 for lang in languages:
-    languages[lang]["start_2"] = """<blockquote>💕————୨♡୧————💕
+    languages[lang]["start_2"] = """<blockquote>💕━━━୨♡୧━━━💕
 
 🌷 𝐻𝑒𝑦 {0}
 𝐖𝑒𝑙𝑐𝑜𝑚𝑒 𝑡𝑜 {1} 🦢🤍
@@ -71,9 +71,9 @@ for lang in languages:
 🫶 𝐔𝑠𝑒𝑟 ⇢ @{6}
 🩷 𝐁𝑜𝑡 ⇢ {1}
 
-🌸 𝑇𝑎𝑝 𝐻𝑒𝑙𝑝 𝑡𝑜 𝑉𝑖𝑒𝑤 𝐴𝑙𝑙 𝐶𝑜ᴍᴍᴀɴᴅs
+🌸 𝑇𝑎𝑝 𝐻𝑒𝑙𝑝 𝑡𝑜 𝑉𝑖𝑒𝑤 𝐴𝑙𝑙 𝐶𝑜𝑚𝑚𝑎𝑛𝑑𝑠
 
-💕————୨♡୧————💕
+💕━━━୨♡୧━━━💕
 
 🎵 𝐸𝑛𝑗𝑜𝑦 𝐸𝑣𝑒𝑟𝑦 𝐵𝑒𝑎𝑡 🤍</blockquote>"""
 
